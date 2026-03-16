@@ -1,11 +1,11 @@
 // lib/auth.ts
-import { type NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { compare } from 'bcryptjs';
 import { prisma } from './prisma';
 
-export const authOptions: NextAuthOptions = {
+const { auth: authFunction, handlers, signIn, signOut } = NextAuth({
     adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
@@ -63,4 +63,8 @@ export const authOptions: NextAuthOptions = {
         maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     secret: process.env.NEXTAUTH_SECRET,
-};
+});
+
+export const auth = authFunction;
+export const { GET, POST } = handlers;
+export { signIn, signOut };
