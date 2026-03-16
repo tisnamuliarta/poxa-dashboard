@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Lightbulb } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import '../auth.css';
 
 export default function LoginPage() {
@@ -93,13 +94,14 @@ export default function LoginPage() {
                         </label>
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
+                        variant="primary"
                         className="submit-button"
                         disabled={isLoading}
                     >
                         {isLoading ? 'Signing in...' : 'Sign In'}
-                    </button>
+                    </Button>
                 </form>
 
                 <div style={{ marginTop: 'var(--space-lg)', textAlign: 'center' }}>
