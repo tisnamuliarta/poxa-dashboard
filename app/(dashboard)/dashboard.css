@@ -1,0 +1,42 @@
+/* app/(dashboard)/dashboard.css */
+
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+}
+
+.dashboard-main {
+    flex: 1;
+    margin-left: 280px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: var(--space-2xl);
+    overflow-y: auto;
+    animation: fadeIn 0.5s var(--ease-out) forwards;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-layout {
+        flex-direction: column;
+    }
+
+    .dashboard-main {
+        margin-left: 0;
+    }
+
+    .dashboard-content {
+        padding: var(--space-lg);
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard-content {
+        padding: var(--space-md);
+    }
+}

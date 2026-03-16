@@ -1,0 +1,7 @@
+// package.json script additions
+// Add to package.json scripts section:
+{
+  "prisma": "prisma",
+  "db:push": "prisma db push",
+  "db:seed": "node --loader ts-node/esm prisma/seed.ts || npx ts-node prisma/seed.ts"
+}

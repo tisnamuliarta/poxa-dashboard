@@ -1,0 +1,113 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model AnalyticsSnapshot {
+  id               String   @id @default(cuid())
+  timestamp        DateTime @default(now())
+  connections      Int
+  channels         Int
+  publicChannels   Int
+  privateChannels  Int
+  presenceChannels Int
+  messagesPerMin   Float
+  createdAt        DateTime @default(now())
+
+  @@index([timestamp])
+}
+
+model EventLog {
+  id        String   @id @default(cuid())
+  channel   String
+  event     String
+  data      String   // JSON string
+  socketId  String?
+  source    String   // "api" | "client" | "console"
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([channel])
+  @@index([event])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  actor     String   // email or system
+  details   String?  // JSON
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([actor])
+  @@index([createdAt])
+}
+
+model WebhookConfig {
+  id        String   @id @default(cuid())
+  url       String
+  secret    String
+  events    String   // JSON array of event types
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WebhookDelivery {
+  id        String   @id @default(cuid())
+  configId  String
+  event     String
+  payload   String   // JSON
+  status    Int      // HTTP status code
+  response  String?  // Response body
+  latency   Int      // milliseconds
+  attempts  Int      @default(1)
+  nextRetry DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([configId])
+  @@index([createdAt])
+}
+
+model DashboardSettings {
+  id             String @id @default("default")
+  theme          String @default("system")
+  refreshInterval Int    @default(5000)
+  maxLogSize     Int    @default(500)
+  timezone       String @default("UTC")
+  notifications  Boolean @default(false)
+  updatedAt      DateTime @updatedAt
+}
+
+model TriggeredEvent {
+  id        String   @id @default(cuid())
+  channel   String
+  event     String
+  data      String   // JSON
+  socketId  String?
+  response  String?  // Response from Poxa
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([channel])
+  @@index([createdAt])
+}

@@ -1,0 +1,505 @@
+/* ============================================================================
+   POXA DASHBOARD - DESIGN SYSTEM & GLOBAL STYLES
+   ============================================================================ */
+
+/* Color Palette & Token System */
+:root {
+    /* Brand Colors */
+    --color-primary: hsl(252, 87%, 64%);
+    --color-primary-hover: hsl(252, 87%, 58%);
+    --color-primary-active: hsl(252, 87%, 52%);
+    --color-primary-muted: hsl(252, 30%, 94%);
+
+    /* Semantic Colors */
+    --color-success: hsl(142, 71%, 45%);
+    --color-success-light: hsl(142, 71%, 88%);
+    --color-warning: hsl(38, 92%, 50%);
+    --color-warning-light: hsl(38, 92%, 88%);
+    --color-danger: hsl(0, 84%, 60%);
+    --color-danger-light: hsl(0, 84%, 88%);
+    --color-info: hsl(199, 89%, 48%);
+    --color-info-light: hsl(199, 89%, 88%);
+
+    /* Neutral - Light Mode */
+    --color-bg: hsl(220, 20%, 98%);
+    --color-bg-secondary: hsl(220, 14%, 96%);
+    --color-surface: hsl(0, 0%, 100%);
+    --color-surface-hover: hsl(220, 14%, 96%);
+    --color-surface-active: hsl(220, 14%, 92%);
+    --color-border: hsl(220, 13%, 91%);
+    --color-border-light: hsl(220, 13%, 95%);
+    --color-text: hsl(220, 15%, 15%);
+    --color-text-secondary: hsl(220, 9%, 46%);
+    --color-text-tertiary: hsl(220, 8%, 65%);
+    --color-divider: hsl(220, 13%, 88%);
+
+    /* Neutral - Dark Mode */
+    --color-bg-dark: hsl(225, 25%, 8%);
+    --color-bg-secondary-dark: hsl(225, 25%, 12%);
+    --color-surface-dark: hsl(225, 20%, 12%);
+    --color-surface-hover-dark: hsl(225, 20%, 18%);
+    --color-surface-active-dark: hsl(225, 20%, 24%);
+    --color-border-dark: hsl(225, 15%, 20%);
+    --color-border-light-dark: hsl(225, 15%, 16%);
+    --color-text-dark: hsl(220, 15%, 92%);
+    --color-text-secondary-dark: hsl(220, 10%, 65%);
+    --color-text-tertiary-dark: hsl(220, 8%, 50%);
+    --color-divider-dark: hsl(225, 15%, 18%);
+
+    /* Special Colors */
+    --color-overlay: hsl(0, 0%, 0% / 0.5);
+    --color-overlay-dark: hsl(0, 0%, 0% / 0.8);
+
+    /* Spacing Scale (8px base) */
+    --space-xs: 0.25rem;
+    /* 4px */
+    --space-sm: 0.5rem;
+    /* 8px */
+    --space-md: 1rem;
+    /* 16px */
+    --space-lg: 1.5rem;
+    /* 24px */
+    --space-xl: 2rem;
+    /* 32px */
+    --space-2xl: 3rem;
+    /* 48px */
+    --space-3xl: 4rem;
+    /* 64px */
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Font Sizes (fluid scale) */
+    --text-xs: 0.75rem;
+    /* 12px */
+    --text-sm: 0.875rem;
+    /* 14px */
+    --text-base: 1rem;
+    /* 16px */
+    --text-lg: 1.125rem;
+    /* 18px */
+    --text-xl: 1.25rem;
+    /* 20px */
+    --text-2xl: 1.5rem;
+    /* 24px */
+    --text-3xl: 1.875rem;
+    /* 30px */
+    --text-4xl: 2.25rem;
+    /* 36px */
+
+    /* Font Weights */
+    --fw-normal: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+
+    /* Line Heights */
+    --lh-tight: 1.2;
+    --lh-normal: 1.5;
+    --lh-relaxed: 1.75;
+
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 9999px;
+
+    /* Shadows */
+    --shadow-xs: 0 1px 2px hsl(220 15% 15% / 0.05);
+    --shadow-sm: 0 1px 3px hsl(220 15% 15% / 0.1), 0 1px 2px hsl(220 15% 15% / 0.06);
+    --shadow-md: 0 4px 6px hsl(220 15% 15% / 0.1), 0 2px 4px hsl(220 15% 15% / 0.06);
+    --shadow-lg: 0 10px 15px hsl(220 15% 15% / 0.1), 0 4px 6px hsl(220 15% 15% / 0.05);
+    --shadow-xl: 0 20px 25px hsl(220 15% 15% / 0.1), 0 8px 12px hsl(220 15% 15% / 0.04);
+    --shadow-2xl: 0 25px 50px hsl(220 15% 15% / 0.15);
+
+    /* Shadows - Dark Mode */
+    --shadow-xs-dark: 0 1px 2px hsl(0 0% 0% / 0.2);
+    --shadow-sm-dark: 0 1px 3px hsl(0 0% 0% / 0.3), 0 1px 2px hsl(0 0% 0% / 0.1);
+    --shadow-md-dark: 0 4px 6px hsl(0 0% 0% / 0.4), 0 2px 4px hsl(0 0% 0% / 0.2);
+    --shadow-lg-dark: 0 10px 15px hsl(0 0% 0% / 0.4), 0 4px 6px hsl(0 0% 0% / 0.1);
+    --shadow-xl-dark: 0 20px 25px hsl(0 0% 0% / 0.4), 0 8px 12px hsl(0 0% 0% / 0.1);
+    --shadow-2xl-dark: 0 25px 50px hsl(0 0% 0% / 0.5);
+
+    /* Transitions & Animations */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 350ms;
+
+    /* Z-Index Scale */
+    --z-hide: -1;
+    --z-base: 0;
+    --z-dropdown: 100;
+    --z-sticky: 500;
+    --z-fixed: 1000;
+    --z-modal-bg: 1100;
+    --z-modal: 1200;
+    --z-tooltip: 1300;
+    --z-notification: 1400;
+
+    /* Glassmorphism */
+    --backdrop-blur: blur(12px);
+    --glass-bg: hsl(0 0% 100% / 0.8);
+    --glass-bg-dark: hsl(225 20% 12% / 0.8);
+    --glass-border: hsl(220 13% 91% / 0.5);
+    --glass-border-dark: hsl(225 15% 20% / 0.5);
+}
+
+/* Dark Mode - Using [data-theme="dark"] */
+[data-theme='dark'] {
+    --color-bg: var(--color-bg-dark);
+    --color-bg-secondary: var(--color-bg-secondary-dark);
+    --color-surface: var(--color-surface-dark);
+    --color-surface-hover: var(--color-surface-hover-dark);
+    --color-surface-active: var(--color-surface-active-dark);
+    --color-border: var(--color-border-dark);
+    --color-border-light: var(--color-border-light-dark);
+    --color-text: var(--color-text-dark);
+    --color-text-secondary: var(--color-text-secondary-dark);
+    --color-text-tertiary: var(--color-text-tertiary-dark);
+    --color-divider: var(--color-divider-dark);
+    --shadow-xs: var(--shadow-xs-dark);
+    --shadow-sm: var(--shadow-sm-dark);
+    --shadow-md: var(--shadow-md-dark);
+    --shadow-lg: var(--shadow-lg-dark);
+    --shadow-xl: var(--shadow-xl-dark);
+    --shadow-2xl: var(--shadow-2xl-dark);
+    --glass-bg: var(--glass-bg-dark);
+    --glass-border: var(--glass-border-dark);
+}
+
+/* ============================================================================
+   GLOBAL STYLES
+   ============================================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--lh-normal);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    transition: background-color var(--duration-normal) var(--ease-out),
+        color var(--duration-normal) var(--ease-out);
+}
+
+/* Typography Defaults */
+h1 {
+    font-size: var(--text-4xl);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-tight);
+}
+
+h2 {
+    font-size: var(--text-3xl);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-tight);
+}
+
+h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+}
+
+h4 {
+    font-size: var(--text-xl);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-tight);
+}
+
+h5 {
+    font-size: var(--text-lg);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-normal);
+}
+
+h6 {
+    font-size: var(--text-base);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-normal);
+}
+
+p {
+    margin-bottom: var(--space-md);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+}
+
+a:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+}
+
+/* Form Elements */
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    transition: border-color var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out),
+        box-shadow var(--duration-fast) var(--ease-out);
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+    border-color: var(--color-primary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-muted);
+    background-color: var(--color-surface);
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-tertiary);
+}
+
+/* Selection Styling */
+::selection {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* Code & Monospace */
+code,
+pre {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+code {
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+}
+
+pre {
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    overflow-x: auto;
+}
+
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* ============================================================================
+   ANIMATIONS & UTILITIES
+   ============================================================================ */
+
+/* Pulse Animation - for live indicators */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse var(--duration-slow) var(--ease-in-out) infinite;
+}
+
+/* Spin Animation - for loading */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn var(--duration-normal) var(--ease-out) forwards;
+}
+
+/* Slide In Animation */
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft var(--duration-normal) var(--ease-out) forwards;
+}
+
+/* Scale Animation */
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.animate-scale-in {
+    animation: scaleIn var(--duration-normal) var(--ease-out) forwards;
+}
+
+/* Hover Effects */
+.hover-scale {
+    transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+.hover-brightness {
+    transition: filter var(--duration-fast) var(--ease-out);
+}
+
+.hover-brightness:hover {
+    filter: brightness(0.95);
+}
+
+/* Utility Classes */
+.surface {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+}
+
+.text-muted {
+    color: var(--color-text-secondary);
+}
+
+.text-tertiary {
+    color: var(--color-text-tertiary);
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Responsive Media Query Breakpoints */
+/* sm: 640px, md: 768px, lg: 1024px, xl: 1280px, 2xl: 1536px */
+
+@media (max-width: 640px) {
+    body {
+        font-size: var(--text-sm);
+    }
+
+    h1 {
+        font-size: var(--text-3xl);
+    }
+
+    h2 {
+        font-size: var(--text-2xl);
+    }
+}
+
+/* Focus Visible for Keyboard Navigation */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}

@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  poxa:
+    image: edgurgel/poxa-automated:latest
+    container_name: poxa-server
+    ports:
+      - "8080:8080"
+    environment:
+      - POXA_APP_KEY=app_key
+      - POXA_SECRET=secret
+      - POXA_APP_ID=app_id
+      - PORT=8080
+      - MIX_ENV=prod
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: poxa-dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - POXA_HOST=poxa
+      - POXA_PORT=8080
+      - POXA_APP_ID=app_id
+      - POXA_APP_KEY=app_key
+      - POXA_SECRET=secret
+      - DATABASE_URL=file:./prisma/prod.db
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-change-me-in-production}
+      - NEXTAUTH_URL=http://localhost:3000
+      - ADMIN_EMAIL=admin@poxa.local
+      - ADMIN_PASSWORD=admin123
+    depends_on:
+      poxa:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./prisma:/app/prisma
+
+  # Optional: Development version with hot reload
+  # Uncomment to use for development
+  # dashboard-dev:
+  #   build:
+  #     context: .
+  #     target: builder
+  #   container_name: poxa-dashboard-dev
+  #   ports:
+  #     - '3001:3000'
+  #   environment:
+  #     - NODE_ENV=development
+  #     - POXA_HOST=poxa
+  #     - POXA_PORT=8080
+  #     - POXA_APP_ID=app_id
+  #     - POXA_APP_KEY=app_key
+  #     - POXA_SECRET=secret
+  #     - DATABASE_URL=file:./prisma/dev.db
+  #     - NEXTAUTH_SECRET=dev-secret-change-in-production
+  #     - NEXTAUTH_URL=http://localhost:3001
+  #   depends_on:
+  #     - poxa
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #     - /app/.next
+  #   command: npm run dev
+
+volumes:
+  poxa-data:
+  dashboard-data:
