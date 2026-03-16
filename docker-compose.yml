@@ -1,25 +1,6 @@
 version: "3.8"
 
 services:
-  poxa:
-    image: edgurgel/poxa-automated:latest
-    container_name: poxa-server
-    ports:
-      - "8080:8080"
-    environment:
-      - POXA_APP_KEY=app_key
-      - POXA_SECRET=secret
-      - POXA_APP_ID=app_id
-      - PORT=8080
-      - MIX_ENV=prod
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-      start_period: 10s
-
   dashboard:
     build:
       context: .
@@ -29,19 +10,17 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - POXA_HOST=poxa
-      - POXA_PORT=8080
-      - POXA_APP_ID=app_id
-      - POXA_APP_KEY=app_key
-      - POXA_SECRET=secret
+      - POXA_HOST=sso.imip.co.id
+      - POXA_PORT=443
+      - POXA_SCHEME=https
+      - POXA_APP_ID=321434
+      - POXA_APP_KEY=027160175a01cb58f9179878f62a952d
+      - POXA_SECRET=bf80961e5ea45d67148ceabedebdc78f
       - DATABASE_URL=file:./prisma/prod.db
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-change-me-in-production}
       - NEXTAUTH_URL=http://localhost:3000
       - ADMIN_EMAIL=admin@poxa.local
       - ADMIN_PASSWORD=admin123
-    depends_on:
-      poxa:
-        condition: service_healthy
     restart: unless-stopped
     volumes:
       - ./prisma:/app/prisma

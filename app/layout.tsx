@@ -1,7 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
-import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
+import { Providers } from '@/components/providers';
 import './globals.css';
 
 const inter = Inter({
@@ -30,9 +30,7 @@ export default function RootLayout({
     return (
         <html lang="en" className={inter.variable}>
             <body>
-                <SessionProvider>
-                    {children}
-                </SessionProvider>
+                <Providers>{children}</Providers>
             </body>
         </html>
     );

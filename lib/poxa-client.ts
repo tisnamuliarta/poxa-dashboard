@@ -32,10 +32,11 @@ async function request<T>(
 ): Promise<T> {
     const host = process.env.POXA_HOST || 'localhost';
     const port = process.env.POXA_PORT || '8080';
+    const scheme = process.env.POXA_SCHEME || 'http';
     const appId = process.env.POXA_APP_ID || 'app_id';
     const appKey = process.env.POXA_APP_KEY || 'app_key';
 
-    const baseUrl = `http://${host}:${port}`;
+    const baseUrl = `${scheme}://${host}:${port}`;
 
     // Build query params
     const params: Record<string, string> = {
