@@ -88,7 +88,11 @@ export const poxaClient = {
         const result = await request<{ channels: Record<string, Channel> }>('GET', path, {
             ...(prefixFilter && { filter_by_prefix: prefixFilter }),
         });
-        return Object.values(result.channels || {});
+        // Convert object with channel names as keys to array with name property
+        return Object.entries(result.channels || {}).map(([name, channel]) => ({
+            ...channel,
+            name,
+        }));
     },
 
     /**

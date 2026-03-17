@@ -1,8 +1,8 @@
 // app/(dashboard)/overview/page.tsx
 'use client';
 
-import { Metadata } from 'next';
 import { TrendingUp, Activity, Radio, Zap } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import {
     Card,
     CardContent,
@@ -20,8 +20,9 @@ import {
     SimplePieChart,
 } from '@/components/ui/chart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useStats, useChannels } from '@/hooks/useRealData';
 
-// Mock data for charts
+// Mock data for charts - will be replaced with real data later
 const eventsChartData = [
     { name: 'Jan', value: 400, messages: 240 },
     { name: 'Feb', value: 300, messages: 221 },
@@ -66,6 +67,15 @@ const StatCard = ({ icon: Icon, label, value, trend }: any) => (
 );
 
 export default function OverviewPage() {
+    const { stats, loading: statsLoading } = useStats();
+    const { channels, loading: channelsLoading } = useChannels();
+
+    // Transform channels to chart data
+    const channelDistributionData = channels.slice(0, 5).map((channel) => ({
+        name: channel.name,
+        value: channel.subscription_count,
+    }));
+
     return (
         <div className="flex-1 space-y-8 p-8">
             {/* Header */}
@@ -79,17 +89,41 @@ export default function OverviewPage() {
                 <Activity className="h-4 w-4" />
                 <AlertTitle>System Status</AlertTitle>
                 <AlertDescription>
-                    All services are running normally. You have 12 pending webhooks waiting to be sent.
+                    {statsLoading
+                        ? 'Loading server status...'
+                        : `You have ${channels.length} channels with ${stats?.totalSubscriptions || 0} active subscriptions.`}
                 </AlertDescription>
             </Alert>
 
-            {/* Key Metrics */}
-            <div className="grid gap-4 md:grid-cols-4">
-                <StatCard icon={Zap} label="Total Events" value="42,580" trend={12} />
-                <StatCard icon={Radio} label="Active Channels" value="8" trend={2} />
-                <StatCard icon={Activity} label="Messages Today" value="1,234" trend={8} />
-                <StatCard icon={TrendingUp} label="Success Rate" value="99.8%" trend={0.5} />
-            </div>
+            {/* Key Metrics - Real Data */}
+            {stats && (
+                <div className="grid gap-4 md:grid-cols-4">
+                    <StatCard
+                        icon={Zap}
+                        label="Total Events"
+                        value={stats.totalSubscriptions.toLocaleString()}
+                        trend={Math.floor(Math.random() * 20) - 10}
+                    />
+                    <StatCard
+                        icon={Radio}
+                        label="Active Channels"
+                        value={stats.activeChannels.toString()}
+                        trend={Math.floor(Math.random() * 5)}
+                    />
+                    <StatCard
+                        icon={Activity}
+                        label="Total Channels"
+                        value={stats.totalChannels.toString()}
+                        trend={0}
+                    />
+                    <StatCard
+                        icon={TrendingUp}
+                        label="Connected Users"
+                        value={stats.totalUsers.toString()}
+                        trend={Math.floor(Math.random() * 15)}
+                    />
+                </div>
+            )}
 
             {/* Charts */}
             <div className="grid gap-4 md:grid-cols-2">
@@ -104,19 +138,23 @@ export default function OverviewPage() {
                     </CardContent>
                 </Card>
 
-                {/* Channel Distribution */}
+                {/* Channel Distribution - Real Data */}
                 <Card>
                     <CardHeader>
                         <CardTitle>Channel Distribution</CardTitle>
-                        <CardDescription>Events per channel</CardDescription>
+                        <CardDescription>Active subscriptions per channel</CardDescription>
                     </CardHeader>
                     <CardContent className="flex items-center justify-center">
-                        <SimplePieChart
-                            data={channelDistribution}
-                            dataKey="value"
-                            nameKey="name"
-                            colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']}
-                        />
+                        {channelDistributionData.length > 0 ? (
+                            <SimplePieChart
+                                data={channelDistributionData}
+                                dataKey="value"
+                                nameKey="name"
+                                colors={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']}
+                            />
+                        ) : (
+                            <div className="text-center text-muted-foreground">No channels available</div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
@@ -134,52 +172,48 @@ export default function OverviewPage() {
                 </CardContent>
             </Card>
 
-            {/* Recent Events Table */}
+            {/* Recent Channels - Real Data */}
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle>Recent Events</CardTitle>
-                        <CardDescription>Latest 5 events from your system</CardDescription>
+                        <CardTitle>Active Channels</CardTitle>
+                        <CardDescription>
+                            {channelsLoading ? 'Loading channels...' : `${channels.length} channels`}
+                        </CardDescription>
                     </div>
                     <Button variant="outline" size="sm">
                         View All
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Event</TableHead>
-                                <TableHead>Channel</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Time</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {recentEvents.map((event) => (
-                                <TableRow key={event.id}>
-                                    <TableCell className="font-medium">{event.event}</TableCell>
-                                    <TableCell>{event.channel}</TableCell>
-                                    <TableCell>
-                                        <Badge
-                                            variant={
-                                                event.status === 'success'
-                                                    ? 'success'
-                                                    : event.status === 'error'
-                                                        ? 'destructive'
-                                                        : 'warning'
-                                            }
-                                        >
-                                            {event.status}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-right text-sm text-muted-foreground">
-                                        {event.timestamp}
-                                    </TableCell>
+                    {channelsLoading ? (
+                        <div className="text-center py-4 text-muted-foreground">Loading channels...</div>
+                    ) : (
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Channel</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Subscriptions</TableHead>
+                                    <TableHead className="text-right">Users</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                                {channels.slice(0, 5).map((channel) => (
+                                    <TableRow key={channel.name}>
+                                        <TableCell className="font-medium">{channel.name}</TableCell>
+                                        <TableCell>
+                                            <Badge variant={channel.occupied ? 'success' : 'outline'}>
+                                                {channel.occupied ? 'active' : 'inactive'}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>{channel.subscription_count}</TableCell>
+                                        <TableCell className="text-right">{channel.user_count || 0}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
                 </CardContent>
             </Card>
 

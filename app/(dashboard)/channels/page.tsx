@@ -20,55 +20,14 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-const channels = [
-    {
-        id: 1,
-        name: 'default',
-        status: 'active',
-        eventCount: 1234,
-        subscribers: 12,
-        createdAt: '2024-01-15',
-    },
-    {
-        id: 2,
-        name: 'notifications',
-        status: 'active',
-        eventCount: 567,
-        subscribers: 8,
-        createdAt: '2024-01-20',
-    },
-    {
-        id: 3,
-        name: 'analytics',
-        status: 'active',
-        eventCount: 3456,
-        subscribers: 25,
-        createdAt: '2024-01-25',
-    },
-    {
-        id: 4,
-        name: 'webhooks',
-        status: 'inactive',
-        eventCount: 234,
-        subscribers: 3,
-        createdAt: '2024-02-01',
-    },
-    {
-        id: 5,
-        name: 'monitoring',
-        status: 'active',
-        eventCount: 890,
-        subscribers: 15,
-        createdAt: '2024-02-05',
-    },
-];
+import { useChannels } from '@/hooks/useRealData';
 
 export default function ChannelsPage() {
     const [searchTerm, setSearchTerm] = useState('');
+    const { channels, loading, error } = useChannels();
 
-    const filteredChannels = channels.filter((channel) =>
-        channel.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredChannels = (channels || []).filter((channel) =>
+        (channel?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -111,66 +70,73 @@ export default function ChannelsPage() {
                 <CardHeader>
                     <CardTitle>Channels List</CardTitle>
                     <CardDescription>
-                        {filteredChannels.length} channel{filteredChannels.length !== 1 ? 's' : ''} found
+                        {loading ? 'Loading...' : `${filteredChannels.length} channel${filteredChannels.length !== 1 ? 's' : ''} found`}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Events</TableHead>
-                                    <TableHead className="text-right">Subscribers</TableHead>
-                                    <TableHead>Created</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredChannels.length > 0 ? (
-                                    filteredChannels.map((channel) => (
-                                        <TableRow key={channel.id}>
-                                            <TableCell className="font-medium">{channel.name}</TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    variant={channel.status === 'active' ? 'success' : 'outline'}
-                                                >
-                                                    {channel.status}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">{channel.eventCount}</TableCell>
-                                            <TableCell className="text-right">{channel.subscribers}</TableCell>
-                                            <TableCell>{channel.createdAt}</TableCell>
-                                            <TableCell className="text-right">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="sm">
-                                                            <Settings className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                        <DropdownMenuItem>Clear Events</DropdownMenuItem>
-                                                        <DropdownMenuItem className="text-destructive">
-                                                            Delete
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
+                    {error && <div className="text-destructive text-sm mb-4">{error}</div>}
+                    {loading ? (
+                        <div className="text-center py-8 text-muted-foreground">Loading channels...</div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Subscriptions</TableHead>
+                                        <TableHead className="text-right">Users</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredChannels.length > 0 ? (
+                                        filteredChannels.map((channel) => (
+                                            <TableRow key={channel.name}>
+                                                <TableCell className="font-medium">{channel.name}</TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        variant={channel.occupied ? 'success' : 'outline'}
+                                                    >
+                                                        {channel.occupied ? 'active' : 'inactive'}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    {channel.subscription_count}
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    {channel.user_count || 0}
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="sm">
+                                                                <Settings className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuItem>View Details</DropdownMenuItem>
+                                                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                            <DropdownMenuItem>Clear Events</DropdownMenuItem>
+                                                            <DropdownMenuItem className="text-destructive">
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
+                                                No channels found
                                             </TableCell>
                                         </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={6} className="py-8 text-center text-muted-foreground">
-                                            No channels found
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </div>
