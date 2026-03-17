@@ -1,11 +1,9 @@
 // app/(dashboard)/overview/page.tsx
 'use client';
 
-import { TrendingUp, Activity, Radio, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Activity } from 'lucide-react';
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
@@ -14,14 +12,11 @@ import {
 import { Badge } from '@/components/ui/Badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/Button';
-import {
-    SimpleAreaChart,
-    SimpleLineChart,
-    SimpleBarChart,
-    SimplePieChart,
-} from '@/components/ui/chart';
+import { SimplePieChart } from '@/components/ui/chart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useStats, useChannels } from '@/hooks/useRealData';
+import { ChartAreaInteractive } from '@/components/chart-area-interactive';
+import { SectionCards } from '@/components/section-cards';
 
 // Mock data for charts - will be replaced with real data later
 const eventsChartData = [
@@ -42,38 +37,6 @@ const channelDistribution = [
     { name: 'Channel-5', value: 189 },
 ];
 
-const recentEvents = [
-    { id: 1, event: 'user.signup', channel: 'Channel-1', timestamp: '2 hours ago', status: 'success' },
-    { id: 2, event: 'payment.completed', channel: 'Channel-2', timestamp: '5 hours ago', status: 'success' },
-    { id: 3, event: 'order.shipped', channel: 'Channel-1', timestamp: '1 day ago', status: 'success' },
-    { id: 4, event: 'notification.sent', channel: 'Channel-3', timestamp: '2 days ago', status: 'pending' },
-    { id: 5, event: 'error.occurred', channel: 'Channel-2', timestamp: '3 days ago', status: 'error' },
-];
-
-const StatCard = ({ icon: Icon, label, value, trend }: any) => (
-    <Card className="overflow-hidden rounded-2xl border-border/50 bg-card/90 shadow-sm">
-        <CardHeader className="grid grid-cols-[1fr_auto] items-start gap-y-2 pb-4">
-            <div>
-                <CardDescription className="text-xs font-semibold uppercase tracking-[0.18em]">{label}</CardDescription>
-                <CardTitle className="mt-3 text-4xl font-semibold tracking-tight">{value}</CardTitle>
-            </div>
-            <CardAction>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Icon className="h-4 w-4" />
-                </div>
-            </CardAction>
-        </CardHeader>
-        <CardContent className="pt-0">
-            {trend !== undefined && (
-                <p className={`text-xs font-medium mt-2 ${trend > 0 ? 'text-green-600 dark:text-green-400' : trend < 0 ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'
-                    }`}>
-                    {trend > 0 ? '↑' : trend < 0 ? '↓' : '—'} {trend > 0 ? '+' : ''}{Math.abs(trend)}% from last month
-                </p>
-            )}
-        </CardContent>
-    </Card>
-);
-
 export default function OverviewPage() {
     const { stats, loading: statsLoading } = useStats();
     const { channels, loading: channelsLoading } = useChannels();
@@ -84,17 +47,45 @@ export default function OverviewPage() {
         value: channel.subscription_count,
     }));
 
+    const overviewSeries = eventsChartData.map((item, index) => ({
+        date: `2024-${String(index + 1).padStart(2, '0')}-01`,
+        desktop: item.value,
+        mobile: item.messages,
+    }));
+
+    const cardItems = stats ? [
+        {
+            title: 'Total Events',
+            value: stats.totalSubscriptions.toLocaleString(),
+            change: 8,
+            summary: 'Active subscriptions are rising',
+            detail: 'Measured against the previous month',
+        },
+        {
+            title: 'Active Channels',
+            value: stats.activeChannels.toString(),
+            change: 3,
+            summary: 'More channels are active',
+            detail: 'Healthy realtime fan-out across workloads',
+        },
+        {
+            title: 'Total Channels',
+            value: stats.totalChannels.toString(),
+            change: 0,
+            summary: 'Channel inventory is stable',
+            detail: 'No major structural changes detected',
+        },
+        {
+            title: 'Connected Users',
+            value: stats.totalUsers.toString(),
+            change: 6,
+            summary: 'User connectivity remains healthy',
+            detail: 'Concurrent users trending upward',
+        },
+    ] : [];
+
     return (
         <div className="space-y-8">
-            {/* Header */}
-            <div className="space-y-2">
-                <div className="inline-flex items-center rounded-full border border-border/60 bg-background px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
-                    Live operations dashboard
-                </div>
-                <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Overview</h1>
-                <p className="max-w-2xl text-base text-muted-foreground">Real-time Poxa server monitoring and management with live charts, channel distribution, and stream health.</p>
-            </div>
-
             {/* Status Alert */}
             <Alert className="rounded-2xl border-blue-200/50 bg-blue-50/80 shadow-sm dark:border-blue-900/50 dark:bg-blue-950/30">
                 <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -107,34 +98,7 @@ export default function OverviewPage() {
             </Alert>
 
             {/* Key Metrics - Real Data */}
-            {stats && (
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-                    <StatCard
-                        icon={Zap}
-                        label="Total Events"
-                        value={stats.totalSubscriptions.toLocaleString()}
-                        trend={Math.floor(Math.random() * 20) - 10}
-                    />
-                    <StatCard
-                        icon={Radio}
-                        label="Active Channels"
-                        value={stats.activeChannels.toString()}
-                        trend={Math.floor(Math.random() * 5)}
-                    />
-                    <StatCard
-                        icon={Activity}
-                        label="Total Channels"
-                        value={stats.totalChannels.toString()}
-                        trend={0}
-                    />
-                    <StatCard
-                        icon={TrendingUp}
-                        label="Connected Users"
-                        value={stats.totalUsers.toString()}
-                        trend={Math.floor(Math.random() * 15)}
-                    />
-                </div>
-            )}
+            {stats && <SectionCards items={cardItems} />}
 
             {/* Charts */}
             <div className="grid gap-6 md:grid-cols-2">
@@ -145,7 +109,16 @@ export default function OverviewPage() {
                         <CardDescription>Last 7 months of event activity</CardDescription>
                     </CardHeader>
                     <CardContent className="px-6 pb-6 pt-0">
-                        <SimpleAreaChart data={eventsChartData} dataKey="value" />
+                        <ChartAreaInteractive
+                            title="Event Traffic"
+                            descriptionText="Events and messages for the last 7 months"
+                            shortDescription="Last 7 months"
+                            data={overviewSeries}
+                            series={[
+                                { key: 'desktop', label: 'Events', color: 'var(--chart-1)' },
+                                { key: 'mobile', label: 'Messages', color: 'var(--chart-2)' },
+                            ]}
+                        />
                     </CardContent>
                 </Card>
 
@@ -169,19 +142,6 @@ export default function OverviewPage() {
                     </CardContent>
                 </Card>
             </div>
-
-            {/* Detailed Charts */}
-            <Card className="rounded-2xl">
-                <CardHeader>
-                    <CardTitle>Performance Metrics</CardTitle>
-                    <CardDescription>Events vs Messages over time</CardDescription>
-                </CardHeader>
-                <CardContent className="px-6 pb-6 pt-0">
-                    <div className="h-[400px]">
-                        <SimpleLineChart data={eventsChartData} dataKey="value" stroke="#3b82f6" />
-                    </div>
-                </CardContent>
-            </Card>
 
             {/* Recent Channels - Real Data */}
             <Card>
