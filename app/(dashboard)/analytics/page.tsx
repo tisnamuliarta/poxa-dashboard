@@ -23,66 +23,58 @@ export default function AnalyticsPage() {
     const { analytics, loading, error } = useAnalytics();
 
     return (
-        <div className="flex-1 space-y-8 p-8">
+        <div className="space-y-12">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-                    <p className="text-muted-foreground">Time-series analytics and performance metrics</p>
+                <div className="space-y-3">
+                    <h1 className="text-4xl font-bold tracking-tight">Analytics</h1>
+                    <p className="text-base text-muted-foreground">Time-series analytics and performance metrics</p>
                 </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        Last 7 Days
-                    </Button>
-                </div>
+                <Button variant="outline" className="gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Last 7 Days
+                </Button>
             </div>
 
             {/* Key Metrics */}
             {error && <div className="text-destructive text-sm p-4 bg-destructive/10 rounded-lg">{error}</div>}
             {analytics && (
-                <div className="grid gap-4 md:grid-cols-3">
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium">Total Events</CardTitle>
+                <div className="grid gap-6 md:grid-cols-3">
+                    <Card className="overflow-hidden">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Total Events</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{analytics.summary.totalEvents.toLocaleString()}</div>
-                            <p className="text-xs text-muted-foreground">
-                                <Badge variant="success" className="mr-1">
-                                    ↑ 12%
-                                </Badge>
-                                vs last period
+                        <CardContent className="pt-4">
+                            <div className="text-3xl font-bold">{analytics.summary.totalEvents.toLocaleString()}</div>
+                            <p className="text-xs font-medium text-green-600 dark:text-green-400 mt-2">
+                                ↑ 12% vs last period
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium">Avg Response Time</CardTitle>
+                    <Card className="overflow-hidden">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Avg Response Time</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{analytics.summary.avgResponseTime}ms</div>
-                            <p className="text-xs text-muted-foreground">
-                                <Badge variant="success" className="mr-1">
-                                    ↓ 5%
-                                </Badge>
-                                improved
+                        <CardContent className="pt-4">
+                            <div className="text-3xl font-bold">{analytics.summary.avgResponseTime}ms</div>
+                            <p className="text-xs font-medium text-green-600 dark:text-green-400 mt-2">
+                                ↓ 5% improved
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium">Error Rate</CardTitle>
+                    <Card className="overflow-hidden">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Error Rate</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                         </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{analytics.summary.errorRate}%</div>
-                            <p className="text-xs text-muted-foreground">
-                                <Badge variant="warning" className="mr-1">
-                                    ↑ 2%
-                                </Badge>
-                                slight increase
+                        <CardContent className="pt-4">
+                            <div className="text-3xl font-bold">{analytics.summary.errorRate}%</div>
+                            <p className="text-xs font-medium text-orange-600 dark:text-orange-400 mt-2">
+                                ↑ 2% slight increase
                             </p>
                         </CardContent>
                     </Card>
@@ -94,7 +86,7 @@ export default function AnalyticsPage() {
             ) : analytics ? (
                 <>
                     {/* Main Charts */}
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-6 md:grid-cols-2">
                         {/* Event Trends */}
                         <Card className="md:col-span-2">
                             <CardHeader>

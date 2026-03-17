@@ -50,16 +50,19 @@ const recentEvents = [
 ];
 
 const StatCard = ({ icon: Icon, label, value, trend }: any) => (
-    <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{label}</CardTitle>
-            <Icon className="h-4 w-4 text-muted-foreground" />
+    <Card className="overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
+            <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
+            <div className="p-2 bg-primary/10 rounded-lg">
+                <Icon className="h-4 w-4 text-primary" />
+            </div>
         </CardHeader>
-        <CardContent>
-            <div className="text-2xl font-bold">{value}</div>
-            {trend && (
-                <p className="text-xs text-muted-foreground">
-                    {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}% from last month
+        <CardContent className="pt-4">
+            <div className="text-3xl font-bold tracking-tight">{value}</div>
+            {trend !== undefined && (
+                <p className={`text-xs font-medium mt-2 ${trend > 0 ? 'text-green-600 dark:text-green-400' : trend < 0 ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'
+                    }`}>
+                    {trend > 0 ? '↑' : trend < 0 ? '↓' : '—'} {trend > 0 ? '+' : ''}{Math.abs(trend)}% from last month
                 </p>
             )}
         </CardContent>
@@ -77,18 +80,18 @@ export default function OverviewPage() {
     }));
 
     return (
-        <div className="flex-1 space-y-8 p-8">
+        <div className="space-y-12">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
-                <p className="text-muted-foreground">Real-time Poxa server monitoring and management</p>
+            <div className="space-y-3">
+                <h1 className="text-4xl font-bold tracking-tight">Overview</h1>
+                <p className="text-base text-muted-foreground">Real-time Poxa server monitoring and management</p>
             </div>
 
             {/* Status Alert */}
-            <Alert>
-                <Activity className="h-4 w-4" />
-                <AlertTitle>System Status</AlertTitle>
-                <AlertDescription>
+            <Alert className="border-blue-200/50 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-950/30">
+                <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <AlertTitle className="text-blue-900 dark:text-blue-200">System Status</AlertTitle>
+                <AlertDescription className="text-blue-800 dark:text-blue-300">
                     {statsLoading
                         ? 'Loading server status...'
                         : `You have ${channels.length} channels with ${stats?.totalSubscriptions || 0} active subscriptions.`}
@@ -97,7 +100,7 @@ export default function OverviewPage() {
 
             {/* Key Metrics - Real Data */}
             {stats && (
-                <div className="grid gap-4 md:grid-cols-4">
+                <div className="grid gap-6 md:grid-cols-4">
                     <StatCard
                         icon={Zap}
                         label="Total Events"
@@ -126,7 +129,7 @@ export default function OverviewPage() {
             )}
 
             {/* Charts */}
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2">
                 {/* Events Trend */}
                 <Card>
                     <CardHeader>

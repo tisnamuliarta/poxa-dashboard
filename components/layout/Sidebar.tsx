@@ -16,7 +16,8 @@ import {
     Key,
     X,
 } from 'lucide-react';
-import styles from './Sidebar.module.css';
+import { Button } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
 const navigation = [
     { name: 'Overview', href: '/overview', icon: LayoutDashboard },
@@ -39,59 +40,74 @@ export function Sidebar() {
     return (
         <>
             {/* Mobile Menu Button */}
-            <button
+            <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsOpen(true)}
-                className={styles.mobileMenuButton}
+                className="fixed left-4 top-4 z-40 md:hidden"
                 aria-label="Open menu"
             >
                 <Menu size={24} />
-            </button>
+            </Button>
 
             {/* Overlay */}
             {isOpen && (
                 <div
-                    className={styles.overlay}
+                    className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm md:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
 
             {/* Sidebar */}
-            <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-                <div className={styles.header}>
-                    <div className={styles.logo}>
-                        <Lightbulb size={28} className={styles.logoIcon} />
-                        <span>Poxa</span>
-                    </div>
-                    <button
+            <aside className={cn(
+                'fixed left-0 top-0 h-screen w-64 border-r border-border bg-card transition-transform duration-300 ease-out',
+                'flex flex-col z-40 md:relative md:translate-x-0',
+                isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+            )}>
+                {/* Header */}
+                <div className="border-b border-border px-6 py-5 flex items-center justify-between">
+                    <Link href="/overview" className="flex items-center gap-3 font-semibold text-lg">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                            <Lightbulb size={20} />
+                        </div>
+                        <span className="hidden md:inline">Poxa</span>
+                    </Link>
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => setIsOpen(false)}
-                        className={styles.closeButton}
+                        className="md:hidden"
                         aria-label="Close menu"
                     >
                         <X size={20} />
-                    </button>
+                    </Button>
                 </div>
 
-                <nav className={styles.nav}>
+                {/* Navigation */}
+                <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
                     {navigation.map((item) => {
                         const Icon = item.icon;
                         const active = isActive(item.href);
                         return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`${styles.navItem} ${active ? styles.active : ''}`}
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Icon size={20} className={styles.icon} />
-                                <span>{item.name}</span>
-                                {active && <div className={styles.indicator} />}
+                            <Link key={item.href} href={item.href} onClick={() => setIsOpen(false)}>
+                                <Button
+                                    variant={active ? 'default' : 'ghost'}
+                                    className={cn(
+                                        'w-full justify-start gap-3',
+                                        active && 'bg-primary text-primary-foreground'
+                                    )}
+                                >
+                                    <Icon size={18} />
+                                    <span className="hidden md:inline">{item.name}</span>
+                                </Button>
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className={styles.footer}>
-                    <p className={styles.version}>v1.0.0</p>
+                {/* Footer */}
+                <div className="border-t border-border px-4 py-3 text-center">
+                    <p className="text-xs text-muted-foreground">v1.0.0</p>
                 </div>
             </aside>
         </>

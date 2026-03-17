@@ -31,15 +31,15 @@ export default function ChannelsPage() {
     );
 
     return (
-        <div className="flex-1 space-y-8 p-8">
+        <div className="space-y-12">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Channels</h1>
-                    <p className="text-muted-foreground">Manage your Poxa channels and subscriptions</p>
+                <div className="space-y-3">
+                    <h1 className="text-4xl font-bold tracking-tight">Channels</h1>
+                    <p className="text-base text-muted-foreground">Manage your Poxa channels and subscriptions</p>
                 </div>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
+                <Button className="gap-2">
+                    <Plus className="h-5 w-5" />
                     Create Channel
                 </Button>
             </div>
@@ -47,16 +47,16 @@ export default function ChannelsPage() {
             {/* Search */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Search Channels</CardTitle>
+                    <CardTitle className="text-lg">Search Channels</CardTitle>
                     <CardDescription>Find channels by name</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex gap-2">
                         <div className="relative flex-1">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                             <Input
                                 placeholder="Search channels..."
-                                className="pl-8"
+                                className="pl-10"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -68,7 +68,7 @@ export default function ChannelsPage() {
             {/* Channels Table */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Channels List</CardTitle>
+                    <CardTitle className="text-lg">Channels List</CardTitle>
                     <CardDescription>
                         {loading ? 'Loading...' : `${filteredChannels.length} channel${filteredChannels.length !== 1 ? 's' : ''} found`}
                     </CardDescription>

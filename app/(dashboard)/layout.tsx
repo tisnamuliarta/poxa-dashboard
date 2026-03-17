@@ -1,7 +1,6 @@
 // app/(dashboard)/layout.tsx
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
-import './dashboard.css';
 
 export default async function DashboardLayout({
     children,
@@ -10,11 +9,11 @@ export default async function DashboardLayout({
 }) {
 
     return (
-        <div className="dashboard-layout">
+        <div className="flex min-h-screen bg-background">
             <Sidebar />
-            <div className="dashboard-main">
+            <div className="flex-1 flex flex-col md:ml-0">
                 <Topbar />
-                <main className="dashboard-content">{children}</main>
+                <main className="flex-1 overflow-y-auto p-8 md:p-12 md:pl-6">{children}</main>
             </div>
         </div>
     );
