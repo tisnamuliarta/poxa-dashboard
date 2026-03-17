@@ -154,7 +154,7 @@ export default function AnalyticsPage() {
                                     <p className="font-medium">Peak Activity</p>
                                     <p className="text-sm text-muted-foreground">Maximum concurrent connections</p>
                                 </div>
-                                <Badge>{analytics.summary.totalUsers} users</Badge>
+                                <Badge>{analytics.summary.totalSubscriptions} subscriptions</Badge>
                             </div>
                             <div className="flex items-center justify-between border-t pt-4">
                                 <div>

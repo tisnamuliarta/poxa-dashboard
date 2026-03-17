@@ -183,7 +183,7 @@ export default function EventsPage() {
                                 className="cursor-pointer transition-colors hover:bg-muted"
                                 onClick={() => {
                                     handleTemplateSelect(key as keyof typeof eventTemplates);
-                                    const tabsElement = document.querySelector('[value="create"]');
+                                    const tabsElement = document.querySelector('[value="create"]') as HTMLElement | null;
                                     tabsElement?.click();
                                 }}
                             >
