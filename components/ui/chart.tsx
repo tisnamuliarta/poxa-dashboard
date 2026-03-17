@@ -46,7 +46,7 @@ interface ChartContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerProps>(({ className, children, ...props }, ref) => (
-    <div ref={ref} className={cn('h-[350px] w-full', className)} {...props}>
+    <div ref={ref} className={cn('h-[420px] w-full rounded-lg overflow-hidden bg-card p-0', className)} {...props}>
         <ResponsiveContainer width="100%" height="100%">
             {children}
         </ResponsiveContainer>
@@ -114,12 +114,18 @@ interface AreaChartProps {
 const SimpleAreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
     ({ data, dataKey = 'value', stroke = '#3b82f6', fill = '#3b82f6', className }, ref) => (
         <ChartContainer ref={ref} className={className}>
-            <RechartsAreaChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Area type="monotone" dataKey={dataKey} stroke={stroke} fill={fill} />
+            <RechartsAreaChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <defs>
+                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={fill} stopOpacity={0.25} />
+                        <stop offset="100%" stopColor={fill} stopOpacity={0.06} />
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.6} />
+                <XAxis dataKey="name" tick={{ fill: 'var(--muted-foreground)' }} />
+                <YAxis tick={{ fill: 'var(--muted-foreground)' }} />
+                <Tooltip content={<ChartTooltip />} />
+                <Area type="monotone" dataKey={dataKey} stroke={stroke} strokeWidth={2} fill="url(#areaGradient)" />
             </RechartsAreaChart>
         </ChartContainer>
     )

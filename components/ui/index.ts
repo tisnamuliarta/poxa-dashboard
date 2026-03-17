@@ -3,7 +3,7 @@
 
 // Core components
 export { Button, buttonVariants, type ButtonProps } from './Button';
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './Card';
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, CardAction } from './Card';
 export { Input } from './input';
 export { Label } from './label';
 export { Textarea } from './textarea';

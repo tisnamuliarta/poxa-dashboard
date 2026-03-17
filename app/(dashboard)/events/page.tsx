@@ -84,11 +84,14 @@ export default function EventsPage() {
     };
 
     return (
-        <div className="flex-1 space-y-8 p-8">
+        <div className="space-y-8">
             {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Event Creator</h1>
-                <p className="text-muted-foreground">Create and trigger custom events for your channels</p>
+            <div className="space-y-2">
+                <div className="inline-flex items-center rounded-full border border-border/60 bg-background px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
+                    Trigger custom events
+                </div>
+                <h1 className="text-4xl font-bold tracking-tight">Event Creator</h1>
+                <p className="text-base text-muted-foreground">Compose payloads, reuse templates, and send events through a cleaner shadcn-style workflow.</p>
             </div>
 
             {/* Tabs */}

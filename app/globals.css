@@ -41,6 +41,11 @@
         --chart-5: 27 87% 67%;
     }
 
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+
     .dark {
         --radius: 0.5rem;
         --background: 0 0% 3.6%;

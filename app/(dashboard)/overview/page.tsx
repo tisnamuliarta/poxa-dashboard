@@ -5,6 +5,7 @@ import { TrendingUp, Activity, Radio, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
     Card,
+    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
@@ -50,15 +51,19 @@ const recentEvents = [
 ];
 
 const StatCard = ({ icon: Icon, label, value, trend }: any) => (
-    <Card className="overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
-            <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
-            <div className="p-2 bg-primary/10 rounded-lg">
-                <Icon className="h-4 w-4 text-primary" />
+    <Card className="overflow-hidden rounded-2xl border-border/50 bg-card/90 shadow-sm">
+        <CardHeader className="grid grid-cols-[1fr_auto] items-start gap-y-2 pb-4">
+            <div>
+                <CardDescription className="text-xs font-semibold uppercase tracking-[0.18em]">{label}</CardDescription>
+                <CardTitle className="mt-3 text-4xl font-semibold tracking-tight">{value}</CardTitle>
             </div>
+            <CardAction>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <Icon className="h-4 w-4" />
+                </div>
+            </CardAction>
         </CardHeader>
-        <CardContent className="pt-4">
-            <div className="text-3xl font-bold tracking-tight">{value}</div>
+        <CardContent className="pt-0">
             {trend !== undefined && (
                 <p className={`text-xs font-medium mt-2 ${trend > 0 ? 'text-green-600 dark:text-green-400' : trend < 0 ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'
                     }`}>
@@ -80,15 +85,18 @@ export default function OverviewPage() {
     }));
 
     return (
-        <div className="space-y-12">
+        <div className="space-y-8">
             {/* Header */}
-            <div className="space-y-3">
-                <h1 className="text-4xl font-bold tracking-tight">Overview</h1>
-                <p className="text-base text-muted-foreground">Real-time Poxa server monitoring and management</p>
+            <div className="space-y-2">
+                <div className="inline-flex items-center rounded-full border border-border/60 bg-background px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
+                    Live operations dashboard
+                </div>
+                <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Overview</h1>
+                <p className="max-w-2xl text-base text-muted-foreground">Real-time Poxa server monitoring and management with live charts, channel distribution, and stream health.</p>
             </div>
 
             {/* Status Alert */}
-            <Alert className="border-blue-200/50 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-950/30">
+            <Alert className="rounded-2xl border-blue-200/50 bg-blue-50/80 shadow-sm dark:border-blue-900/50 dark:bg-blue-950/30">
                 <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 <AlertTitle className="text-blue-900 dark:text-blue-200">System Status</AlertTitle>
                 <AlertDescription className="text-blue-800 dark:text-blue-300">
@@ -100,7 +108,7 @@ export default function OverviewPage() {
 
             {/* Key Metrics - Real Data */}
             {stats && (
-                <div className="grid gap-6 md:grid-cols-4">
+                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
                     <StatCard
                         icon={Zap}
                         label="Total Events"
@@ -131,23 +139,23 @@ export default function OverviewPage() {
             {/* Charts */}
             <div className="grid gap-6 md:grid-cols-2">
                 {/* Events Trend */}
-                <Card>
+                <Card className="rounded-2xl">
                     <CardHeader>
                         <CardTitle>Events Trend</CardTitle>
                         <CardDescription>Last 7 months of event activity</CardDescription>
                     </CardHeader>
-                    <CardContent className="pl-0">
+                    <CardContent className="px-6 pb-6 pt-0">
                         <SimpleAreaChart data={eventsChartData} dataKey="value" />
                     </CardContent>
                 </Card>
 
                 {/* Channel Distribution - Real Data */}
-                <Card>
+                <Card className="rounded-2xl">
                     <CardHeader>
                         <CardTitle>Channel Distribution</CardTitle>
                         <CardDescription>Active subscriptions per channel</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex items-center justify-center">
+                    <CardContent className="flex items-center justify-center px-6 pb-6 pt-0">
                         {channelDistributionData.length > 0 ? (
                             <SimplePieChart
                                 data={channelDistributionData}
@@ -163,12 +171,12 @@ export default function OverviewPage() {
             </div>
 
             {/* Detailed Charts */}
-            <Card>
+            <Card className="rounded-2xl">
                 <CardHeader>
                     <CardTitle>Performance Metrics</CardTitle>
                     <CardDescription>Events vs Messages over time</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-6 pb-6 pt-0">
                     <div className="h-[400px]">
                         <SimpleLineChart data={eventsChartData} dataKey="value" stroke="#3b82f6" />
                     </div>

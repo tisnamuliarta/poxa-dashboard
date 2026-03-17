@@ -15,19 +15,22 @@ const authConfig = {
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
+                const email = credentials?.email as string | undefined;
+                const password = credentials?.password as string | undefined;
+
+                if (!email || !password) {
                     throw new Error('Invalid credentials');
                 }
 
                 const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
+                    where: { email },
                 });
 
                 if (!user) {
                     throw new Error('User not found');
                 }
 
-                const passwordMatch = await compare(credentials.password, user.password);
+                const passwordMatch = await compare(password, user.password);
                 if (!passwordMatch) {
                     throw new Error('Invalid password');
                 }
