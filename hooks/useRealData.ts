@@ -17,20 +17,22 @@ export interface ChannelData {
 
 export interface AnalyticsData {
     summary: {
-        totalEvents: number;
-        activeChannels: number;
         totalSubscriptions: number;
-        avgResponseTime: number;
-        errorRate: string;
+        activeChannels: number;
+        totalChannels: number;
+        occupiedRate: number;
+        avgSubscriptionsPerChannel: number;
+        presenceChannels: number;
+        privateChannels: number;
+        publicChannels: number;
     };
     timeSeriesData: Array<{
         name: string;
         events: number;
         messages: number;
-        errors: number;
     }>;
-    errorRateData: Array<{ name: string; value: number }>;
-    performanceData: Array<{ name: string; value: number }>;
+    distributionData: Array<{ name: string; value: number }>;
+    percentileData: Array<{ name: string; value: number }>;
 }
 
 export function useStats() {

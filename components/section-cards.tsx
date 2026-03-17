@@ -13,7 +13,9 @@ import {
 type SectionCardItem = {
   title: string
   value: string
-  change: number
+  badge?: string
+  badgeVariant?: "default" | "secondary" | "destructive" | "success" | "warning" | "info" | "outline" | "ghost" | "link"
+  change?: number
   summary: string
   detail: string
 }
@@ -27,6 +29,7 @@ export function SectionCards({
     {
       title: "Total Revenue",
       value: "$1,250.00",
+      badge: "+12.5%",
       change: 12.5,
       summary: "Trending up this month",
       detail: "Visitors for the last 6 months",
@@ -34,6 +37,7 @@ export function SectionCards({
     {
       title: "New Customers",
       value: "1,234",
+      badge: "-20%",
       change: -20,
       summary: "Down 20% this period",
       detail: "Acquisition needs attention",
@@ -41,6 +45,7 @@ export function SectionCards({
     {
       title: "Active Accounts",
       value: "45,678",
+      badge: "+12.5%",
       change: 12.5,
       summary: "Strong user retention",
       detail: "Engagement exceed targets",
@@ -48,6 +53,7 @@ export function SectionCards({
     {
       title: "Growth Rate",
       value: "4.5%",
+      badge: "+4.5%",
       change: 4.5,
       summary: "Steady performance increase",
       detail: "Meets growth projections",
@@ -57,7 +63,8 @@ export function SectionCards({
   return (
     <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
       {cards.map((item) => {
-        const isUp = item.change >= 0
+        const isUp = (item.change ?? 0) >= 0
+        const badgeText = item.badge ?? `${isUp ? '+' : ''}${item.change}%`
 
         return (
           <Card key={item.title} className="@container/card">
@@ -67,9 +74,9 @@ export function SectionCards({
                 {item.value}
               </CardTitle>
               <CardAction>
-                <Badge variant="outline">
+                <Badge variant={item.badgeVariant ?? "outline"}>
                   {isUp ? <IconTrendingUp /> : <IconTrendingDown />}
-                  {isUp ? '+' : ''}{item.change}%
+                  {badgeText}
                 </Badge>
               </CardAction>
             </CardHeader>

@@ -66,17 +66,26 @@ export default function EventsPage() {
     const handleSendEvent = async () => {
         setIsLoading(true);
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            setResponse({
-                success: true,
-                message: 'Event sent successfully',
-                eventId: `evt_${Math.random().toString(36).substr(2, 9)}`,
+            const parsedData = JSON.parse(eventData || '{}');
+
+            const response = await fetch('/api/events', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    channel,
+                    eventName,
+                    data: parsedData,
+                }),
             });
+
+            const result = await response.json();
+            setResponse(result);
         } catch (error) {
             setResponse({
                 success: false,
-                message: 'Failed to send event',
+                message: error instanceof Error ? error.message : 'Failed to send event',
             });
         } finally {
             setIsLoading(false);

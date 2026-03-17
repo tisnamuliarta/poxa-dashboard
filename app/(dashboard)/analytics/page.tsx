@@ -42,39 +42,39 @@ export default function AnalyticsPage() {
                 <div className="grid gap-6 md:grid-cols-3">
                     <Card className="overflow-hidden">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">Total Events</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Total Subscriptions</CardTitle>
                             <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </CardHeader>
                         <CardContent className="pt-4">
-                            <div className="text-3xl font-bold">{analytics.summary.totalEvents.toLocaleString()}</div>
-                            <p className="text-xs font-medium text-green-600 dark:text-green-400 mt-2">
-                                ↑ 12% vs last period
+                            <div className="text-3xl font-bold">{analytics.summary.totalSubscriptions.toLocaleString()}</div>
+                            <p className="text-xs font-medium text-muted-foreground mt-2">
+                                Current total subscriptions across all channels
                             </p>
                         </CardContent>
                     </Card>
 
                     <Card className="overflow-hidden">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">Avg Response Time</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Avg Subs / Channel</CardTitle>
                             <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </CardHeader>
                         <CardContent className="pt-4">
-                            <div className="text-3xl font-bold">{analytics.summary.avgResponseTime}ms</div>
-                            <p className="text-xs font-medium text-green-600 dark:text-green-400 mt-2">
-                                ↓ 5% improved
+                            <div className="text-3xl font-bold">{analytics.summary.avgSubscriptionsPerChannel}</div>
+                            <p className="text-xs font-medium text-muted-foreground mt-2">
+                                Average subscriptions in the current snapshot
                             </p>
                         </CardContent>
                     </Card>
 
                     <Card className="overflow-hidden">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-border/30">
-                            <CardTitle className="text-sm font-medium text-muted-foreground">Error Rate</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Occupied Rate</CardTitle>
                             <TrendingUp className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                         </CardHeader>
                         <CardContent className="pt-4">
-                            <div className="text-3xl font-bold">{analytics.summary.errorRate}%</div>
-                            <p className="text-xs font-medium text-orange-600 dark:text-orange-400 mt-2">
-                                ↑ 2% slight increase
+                            <div className="text-3xl font-bold">{analytics.summary.occupiedRate}%</div>
+                            <p className="text-xs font-medium text-muted-foreground mt-2">
+                                Percentage of channels currently occupied
                             </p>
                         </CardContent>
                     </Card>
@@ -90,8 +90,8 @@ export default function AnalyticsPage() {
                         {/* Event Trends */}
                         <Card className="md:col-span-2">
                             <CardHeader>
-                                <CardTitle>Event Volume Trend</CardTitle>
-                                <CardDescription>Events over time</CardDescription>
+                                <CardTitle>Top Channels by Subscription Count</CardTitle>
+                                <CardDescription>Live snapshot of your busiest channels</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <SimpleLineChart data={analytics.timeSeriesData} dataKey="events" stroke="#3b82f6" />
@@ -101,12 +101,12 @@ export default function AnalyticsPage() {
                         {/* Error Distribution */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Error Distribution</CardTitle>
-                                <CardDescription>Breakdown of error types</CardDescription>
+                                <CardTitle>Channel Type Distribution</CardTitle>
+                                <CardDescription>Public, private, presence, and inactive channels</CardDescription>
                             </CardHeader>
                             <CardContent className="flex items-center justify-center">
                                 <SimplePieChart
-                                    data={analytics.errorRateData}
+                                    data={analytics.distributionData}
                                     dataKey="value"
                                     nameKey="name"
                                     colors={['#ef4444', '#f59e0b', '#3b82f6', '#6b7280']}
@@ -117,11 +117,11 @@ export default function AnalyticsPage() {
                         {/* Performance Percentiles */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Latency Percentiles</CardTitle>
-                                <CardDescription>Response time distribution</CardDescription>
+                                <CardTitle>Subscription Percentiles</CardTitle>
+                                <CardDescription>Distribution of subscriptions per channel</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <SimpleBarChart data={analytics.performanceData} dataKey="value" fill="#10b981" />
+                                <SimpleBarChart data={analytics.percentileData} dataKey="value" fill="#10b981" />
                             </CardContent>
                         </Card>
                     </div>
@@ -129,8 +129,8 @@ export default function AnalyticsPage() {
                     {/* Detailed Area Chart */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Detailed Event Analytics</CardTitle>
-                            <CardDescription>Cumulative view of all metrics</CardDescription>
+                            <CardTitle>Subscriptions vs Presence Users</CardTitle>
+                            <CardDescription>Comparison of subscription counts and reported users</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="h-[400px]">
@@ -151,24 +151,24 @@ export default function AnalyticsPage() {
                         <CardContent className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="font-medium">Peak Activity</p>
-                                    <p className="text-sm text-muted-foreground">Maximum concurrent connections</p>
+                                    <p className="font-medium">Presence Channels</p>
+                                    <p className="text-sm text-muted-foreground">Channels exposing user lists through Poxa</p>
                                 </div>
-                                <Badge>{analytics.summary.totalSubscriptions} subscriptions</Badge>
+                                <Badge>{analytics.summary.presenceChannels}</Badge>
                             </div>
                             <div className="flex items-center justify-between border-t pt-4">
                                 <div>
-                                    <p className="font-medium">Active Channels</p>
-                                    <p className="text-sm text-muted-foreground">Currently processing events</p>
+                                    <p className="font-medium">Private Channels</p>
+                                    <p className="text-sm text-muted-foreground">Channels using the private- namespace</p>
                                 </div>
-                                <Badge variant="secondary">{analytics.summary.activeChannels}</Badge>
+                                <Badge variant="secondary">{analytics.summary.privateChannels}</Badge>
                             </div>
                             <div className="flex items-center justify-between border-t pt-4">
                                 <div>
-                                    <p className="font-medium">Error Rate Trend</p>
-                                    <p className="text-sm text-muted-foreground">Last 7 days average</p>
+                                    <p className="font-medium">Public Channels</p>
+                                    <p className="text-sm text-muted-foreground">Channels without private/presence prefixes</p>
                                 </div>
-                                <Badge variant="warning">{analytics.summary.errorRate}%</Badge>
+                                <Badge variant="warning">{analytics.summary.publicChannels}</Badge>
                             </div>
                         </CardContent>
                     </Card>

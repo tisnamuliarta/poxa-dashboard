@@ -6,51 +6,65 @@ export async function GET(request: NextRequest) {
     try {
         const channels = await poxaClient.getChannels();
 
-        // Calculate analytics
-        const totalEvents = channels.reduce((sum, c) => sum + (c.subscription_count || 0), 0);
+        const totalChannels = channels.length;
         const activeChannels = channels.filter((c) => c.occupied).length;
         const totalSubscriptions = channels.reduce((sum, c) => sum + (c.subscription_count || 0), 0);
+        const occupiedRate = totalChannels === 0 ? 0 : Number(((activeChannels / totalChannels) * 100).toFixed(1));
 
-        // Generate mock time-series data based on channels
-        const timeSeriesData = Array.from({ length: 7 }, (_, i) => {
-            const date = new Date();
-            date.setDate(date.getDate() - (6 - i));
-            const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const presenceChannels = channels.filter((c) => c.name.startsWith('presence-')).length;
+        const privateChannels = channels.filter((c) => c.name.startsWith('private-')).length;
+        const publicChannels = totalChannels - presenceChannels - privateChannels;
 
-            return {
-                name: day,
-                events: Math.floor(Math.random() * 400) + 200,
-                messages: Math.floor(Math.random() * 300) + 100,
-                errors: Math.floor(Math.random() * 50),
-            };
-        });
+        const truncateName = (name: string) => name.length > 16 ? `${name.slice(0, 13)}...` : name;
 
-        const errorRateData = [
-            { name: 'Auth Errors', value: Math.floor(Math.random() * 10) + 1 },
-            { name: 'Timeout Errors', value: Math.floor(Math.random() * 15) + 2 },
-            { name: 'Rate Limit Errors', value: Math.floor(Math.random() * 5) },
-            { name: 'Other Errors', value: Math.floor(Math.random() * 3) },
-        ];
+        const timeSeriesData = [...channels]
+            .sort((a, b) => (b.subscription_count || 0) - (a.subscription_count || 0))
+            .slice(0, 7)
+            .map((channel) => ({
+                name: truncateName(channel.name),
+                events: channel.subscription_count || 0,
+                messages: channel.user_count || 0,
+            }));
 
-        const performanceData = [
-            { name: 'p50', value: Math.floor(Math.random() * 50) + 10 },
-            { name: 'p75', value: Math.floor(Math.random() * 100) + 50 },
-            { name: 'p90', value: Math.floor(Math.random() * 150) + 100 },
-            { name: 'p95', value: Math.floor(Math.random() * 200) + 150 },
-            { name: 'p99', value: Math.floor(Math.random() * 300) + 200 },
+        const distributionData = [
+            { name: 'Public', value: publicChannels },
+            { name: 'Private', value: privateChannels },
+            { name: 'Presence', value: presenceChannels },
+            { name: 'Inactive', value: channels.filter((c) => !c.occupied).length },
+        ].filter((item) => item.value > 0);
+
+        const subscriptionCounts = channels
+            .map((channel) => channel.subscription_count || 0)
+            .sort((a, b) => a - b);
+
+        const percentile = (values: number[], ratio: number) => {
+            if (values.length === 0) return 0;
+            const index = Math.min(values.length - 1, Math.floor((values.length - 1) * ratio));
+            return values[index];
+        };
+
+        const percentileData = [
+            { name: 'p50', value: percentile(subscriptionCounts, 0.5) },
+            { name: 'p75', value: percentile(subscriptionCounts, 0.75) },
+            { name: 'p90', value: percentile(subscriptionCounts, 0.9) },
+            { name: 'p95', value: percentile(subscriptionCounts, 0.95) },
+            { name: 'p99', value: percentile(subscriptionCounts, 0.99) },
         ];
 
         return NextResponse.json({
             summary: {
-                totalEvents,
-                activeChannels,
                 totalSubscriptions,
-                avgResponseTime: Math.floor(Math.random() * 100) + 50,
-                errorRate: (Math.random() * 1).toFixed(2),
+                activeChannels,
+                totalChannels,
+                occupiedRate,
+                avgSubscriptionsPerChannel: totalChannels === 0 ? 0 : Number((totalSubscriptions / totalChannels).toFixed(2)),
+                presenceChannels,
+                privateChannels,
+                publicChannels,
             },
             timeSeriesData,
-            errorRateData,
-            performanceData,
+            distributionData,
+            percentileData,
         });
     } catch (error) {
         console.error('Failed to fetch analytics:', error);
